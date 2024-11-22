@@ -5,16 +5,24 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cleanarchitecture.databinding.ItemTaskBinding
+import com.example.cleanarchitecture.domain.model.TaskModel
 import com.example.cleanarchitecture.presentation.uimodule.TaskUI
 
 
-class TaskAdapter(private var taskList: List<TaskUI>):RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(
+    private var taskList: List<TaskUI>,
+    private val onItemClick:(Int) -> Unit
+):RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     inner class TaskViewHolder(private val binding: ItemTaskBinding):RecyclerView.ViewHolder(binding.root){
 
         fun bind(taskUI: TaskUI){
-            binding.tvTask1.text = taskUI.taskName
+            binding.tvTask.text = taskUI.taskName
             binding.tvDate.text = taskUI.taskDate
+
+            binding.root.setOnClickListener {
+                onItemClick(taskUI.id)
+            }
         }
     }
 
@@ -34,5 +42,15 @@ class TaskAdapter(private var taskList: List<TaskUI>):RecyclerView.Adapter<TaskA
         taskList = newTasks
         notifyDataSetChanged()
     }
+
+    fun removeTask(position: Int): TaskUI {
+        val removedTask = taskList[position]
+        taskList = taskList.toMutableList().apply {
+            removeAt(position)
+        }
+        notifyItemRemoved(position)
+        return removedTask
+    }
+
 
 }
