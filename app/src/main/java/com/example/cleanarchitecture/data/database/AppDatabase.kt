@@ -8,6 +8,6 @@ import com.example.cleanarchitecture.data.dto.TaskDto
 
 @Database(entities = [TaskDto::class], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
-
     abstract fun taskManagerDao(): TaskManagerDao
+
 }
