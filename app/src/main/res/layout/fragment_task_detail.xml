@@ -42,4 +42,10 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#FBC02D"
         android:text="Save" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top"/>
 </FrameLayout>

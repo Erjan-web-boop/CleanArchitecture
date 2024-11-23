@@ -1,9 +1,9 @@
 package com.example.cleanarchitecture.presentation.activity
 
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitecture.domain.usecase.DeleteTaskUseCase
 import com.example.cleanarchitecture.domain.usecase.GetAllNotesUseCase
@@ -11,6 +11,7 @@ import com.example.cleanarchitecture.domain.usecase.GetTaskUseCase
 import com.example.cleanarchitecture.domain.usecase.InsertTaskUseCase
 import com.example.cleanarchitecture.domain.usecase.SaveImageUseCase
 import com.example.cleanarchitecture.domain.usecase.UpdateTaskUseCase
+import com.example.cleanarchitecture.presentation.base.BaseViewModel
 import com.example.cleanarchitecture.presentation.uimodule.TaskUI
 import com.example.cleanarchitecture.presentation.uimodule.toDomain
 import com.example.cleanarchitecture.presentation.uimodule.toUi
@@ -19,10 +20,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeoutException
 
 class ActivityViewModel(
     private val insertTaskUseCase: InsertTaskUseCase,
@@ -31,7 +32,7 @@ class ActivityViewModel(
     private val deleteTaskUseCase: DeleteTaskUseCase,
     private val saveImageUseCase: SaveImageUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _tasksStateFlow = MutableStateFlow<List<TaskUI>>(emptyList())
     val tasksFlow: StateFlow<List<TaskUI>> = _tasksStateFlow.asStateFlow()
@@ -49,11 +50,16 @@ class ActivityViewModel(
     }
 
     fun insertTask(taskUI: TaskUI) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val message = insertTaskUseCase.insertTask(taskUI.toDomain())
-            _insertMessageStateFlow.value = message
-            _isTaskInserted.postValue(true)
-        }
+        viewModelScope.runLaunchIO(
+            block = {
+                val message = insertTaskUseCase.insertTask(taskUI.toDomain())
+                _insertMessageStateFlow.value = message
+                _isTaskInserted.postValue(true)
+            },
+            onError = {error ->
+                _errorState.value = "Ошибка при вставке задачи: ${error.message}"
+            }
+        )
     }
 
     suspend fun updateTask(taskUI: TaskUI) {
@@ -63,11 +69,17 @@ class ActivityViewModel(
     }
 
     fun loadTasks() {
-        viewModelScope.launch(Dispatchers.IO) {
-            getAllNotesUseCase().onEach {
-                _tasksStateFlow.value = it.map { model -> model.toUi() }
-            }.collect()
-        }
+        viewModelScope.runLaunchIO(
+            block = {
+                getAllNotesUseCase().onEach {
+                    _tasksStateFlow.value = it.map { model -> model.toUi() }
+                }.collect()
+            },
+            onError = {
+                exception ->
+                Log.e("LoadTasks", "Ошибка загрузки задач", exception)
+            }
+        )
     }
 
     fun deleteTask(taskUI: TaskUI) {
