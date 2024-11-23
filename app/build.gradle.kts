@@ -61,4 +61,7 @@ dependencies {
     //Navigation
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.navigation.ui)
+
+    //ViewBinding
+    implementation (libs.viewbindingpropertydelegate.noreflection)
 }

@@ -2,12 +2,7 @@ package com.example.cleanarchitecture.presentation.fragments
 
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,50 +12,41 @@ import com.example.cleanarchitecture.R
 import com.example.cleanarchitecture.databinding.FragmentTaskListBinding
 import com.example.cleanarchitecture.presentation.activity.TaskAdapter
 import com.example.cleanarchitecture.presentation.activity.ActivityViewModel
+import com.example.cleanarchitecture.presentation.base.BaseFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class TaskListFragment : Fragment() {
+class TaskListFragment : BaseFragment<FragmentTaskListBinding>(
+    R.layout.fragment_task_list, FragmentTaskListBinding::bind) {
 
-    private lateinit var binding: FragmentTaskListBinding
     private val taskAdapter = TaskAdapter(emptyList(), ::onItemClick)
-    private val viewmodel: ActivityViewModel by viewModel()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentTaskListBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    private val viewmodel by viewModel<ActivityViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupListener()
         initAdapter()
-        initObserver()
         initSwipeToDelete()
         viewmodel.loadTasks()
     }
 
-    private fun setupListener() {
+    override fun setupListener() {
         binding.btnNext.setOnClickListener {
             findNavController().navigate(R.id.action_taskListFragment_to_addTaskFragment)
+        }
+    }
+
+    override fun setupObserver() {
+        viewmodel.viewModelScope.launch {
+            viewmodel.tasksFlow.collectLatest {
+                taskAdapter.updateTasks(it)
+            }
         }
     }
 
     private fun initAdapter() {
         binding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerview.adapter = taskAdapter
-    }
-
-    private fun initObserver() {
-        viewmodel.viewModelScope.launch {
-            viewmodel.tasksFlow.collectLatest {
-                taskAdapter.updateTasks(it)
-            }
-        }
     }
 
     private fun onItemClick(id: Int) {

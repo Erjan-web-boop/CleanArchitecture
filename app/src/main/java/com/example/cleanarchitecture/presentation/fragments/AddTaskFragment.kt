@@ -1,32 +1,25 @@
 package com.example.cleanarchitecture.presentation.fragments
 
-
-
-import android.app.TimePickerDialog
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.cleanarchitecture.R
 import com.example.cleanarchitecture.databinding.FragmentAddTaskBinding
 import com.example.cleanarchitecture.presentation.uimodule.TaskUI
 import com.example.cleanarchitecture.presentation.activity.ActivityViewModel
+import com.example.cleanarchitecture.presentation.base.BaseFragment
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Calendar
 
-class AddTaskFragment : Fragment() {
+class AddTaskFragment : BaseFragment<FragmentAddTaskBinding>(
+    R.layout.fragment_add_task, FragmentAddTaskBinding::bind) {
 
-    private lateinit var binding: FragmentAddTaskBinding
-    private val viewmodel: ActivityViewModel by viewModel()
+    private val viewmodel by viewModel<ActivityViewModel>()
     private var imageUri: String = ""
-    private var taskTime: Long = 0L
 
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -36,24 +29,10 @@ class AddTaskFragment : Fragment() {
             }
         }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentAddTaskBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupListener()
-    }
-
-    private fun setupListener() {
+    override fun setupListener() {
         binding.ivImage.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
-
 
         binding.btnSave.setOnClickListener {
             val taskName = binding.etTaskName.text.toString()
@@ -73,10 +52,21 @@ class AddTaskFragment : Fragment() {
             val taskUI = TaskUI(0, taskName, taskDate, imageUri)
             viewmodel.insertTask(taskUI)
         }
+    }
 
-        viewmodel.viewModelScope.launch {
-            viewmodel.insertMessageFlow.collectLatest {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+    override fun setupObserver() {
+        runDefaultLaunch {
+            viewmodel.isLoading.collectLatest { isLoading ->
+                binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+
+                runDefaultLaunch{
+                    viewmodel.insertMessageFlow.collectLatest { message ->
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            viewmodel.clearError()
+                        }
+                    }
+                }
             }
         }
     }
