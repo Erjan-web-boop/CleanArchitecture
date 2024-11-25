@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/addTaskFragment"
-        android:name="com.example.cleanarchitecture.presentation.fragments.AddTaskFragment"
+        android:name="com.example.cleanarchitecture.presentation.addtask.AddTaskFragment"
         android:label="fragment_add_task"
         tools:layout="@layout/fragment_add_task" />
     <fragment
         android:id="@+id/taskListFragment"
-        android:name="com.example.cleanarchitecture.presentation.fragments.TaskListFragment"
+        android:name="com.example.cleanarchitecture.presentation.tasklist.TaskListFragment"
         android:label="fragment_task_list"
         tools:layout="@layout/fragment_task_list" >
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/taskDetailFragment"
-        android:name="com.example.cleanarchitecture.presentation.fragments.TaskDetailFragment"
+        android:name="com.example.cleanarchitecture.presentation.detail.TaskDetailFragment"
         android:label="fragment_task_detail"
         tools:layout="@layout/fragment_task_detail" >
         <argument

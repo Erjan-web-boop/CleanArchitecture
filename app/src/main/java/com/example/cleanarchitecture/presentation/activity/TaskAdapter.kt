@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cleanarchitecture.databinding.ItemTaskBinding
-import com.example.cleanarchitecture.domain.model.TaskModel
 import com.example.cleanarchitecture.presentation.uimodule.TaskUI
 
 

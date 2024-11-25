@@ -1,9 +1,9 @@
 package com.example.cleanarchitecture
 
 import android.app.Application
-import com.example.cleanarchitecture.data.di.DataModule
-import com.example.cleanarchitecture.domain.di.DomainModule
 import com.example.cleanarchitecture.presentation.module.iuModule
+import com.example.data.di.DataModule
+import com.example.domain.di.DomainModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
