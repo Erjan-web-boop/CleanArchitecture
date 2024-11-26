@@ -1,4 +1,4 @@
-package com.example.addtask
+package com.example.addtask.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

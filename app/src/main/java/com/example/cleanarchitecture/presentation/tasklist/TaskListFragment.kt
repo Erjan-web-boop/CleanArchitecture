@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.addtask.AddTaskActivity
+import com.example.addtask.activity.AddTaskActivity
 import com.example.cleanarchitecture.R
 import com.example.cleanarchitecture.databinding.FragmentTaskListBinding
 import com.example.cleanarchitecture.presentation.activity.TaskAdapter

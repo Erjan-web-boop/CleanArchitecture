@@ -1,5 +1,6 @@
-package com.example.addtask
+package com.example.addtask.module
 
+import com.example.addtask.AddTaskViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module

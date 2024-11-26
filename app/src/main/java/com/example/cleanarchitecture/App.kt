@@ -1,7 +1,7 @@
 package com.example.cleanarchitecture
 
 import android.app.Application
-import com.example.addtask.uiModule
+import com.example.addtask.module.uiModule
 import com.example.cleanarchitecture.presentation.module.iuModule
 import com.example.data.di.DataModule
 import com.example.domain.di.DomainModule
