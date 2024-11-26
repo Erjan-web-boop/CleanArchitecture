@@ -1,6 +1,7 @@
 package com.example.cleanarchitecture.presentation.module
 
-import com.example.cleanarchitecture.presentation.addtask.AddTaskViewModel
+
+import com.example.addtask.AddTaskViewModel
 import com.example.cleanarchitecture.presentation.detail.TaskDetailViewModel
 import com.example.cleanarchitecture.presentation.tasklist.TaskListViewModel
 import org.koin.core.module.Module

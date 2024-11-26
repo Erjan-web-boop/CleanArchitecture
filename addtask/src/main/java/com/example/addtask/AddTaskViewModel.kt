@@ -1,19 +1,21 @@
-package com.example.cleanarchitecture.presentation.addtask
+package com.example.addtask
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.TaskUI
 import com.example.cleanarchitecture.presentation.base.BaseViewModel
-import com.example.cleanarchitecture.presentation.uimodule.TaskUI
-import com.example.cleanarchitecture.presentation.uimodule.toDomain
 import com.example.domain.usecase.InsertTaskUseCase
+import com.example.toDomain
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class AddTaskViewModel(
+
     private val insertTaskUseCase: InsertTaskUseCase,
-) : BaseViewModel() {
+
+    ) : BaseViewModel() {
 
     private val _insertMessageStateFlow = MutableStateFlow(String())
     val insertMessageFlow: StateFlow<String> = _insertMessageStateFlow.asStateFlow()
