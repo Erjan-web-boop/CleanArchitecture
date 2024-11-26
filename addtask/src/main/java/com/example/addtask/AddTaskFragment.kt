@@ -36,6 +36,7 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding>(
 
             viewModel.isTaskInserted.observe(viewLifecycleOwner) { isInserted ->
                 if (isInserted) {
+                    requireActivity().finish()
                 }
             }
 

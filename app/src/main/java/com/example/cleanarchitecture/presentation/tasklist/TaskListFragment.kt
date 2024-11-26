@@ -1,6 +1,7 @@
 package com.example.cleanarchitecture.presentation.tasklist
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.addtask.AddTaskActivity
 import com.example.cleanarchitecture.R
 import com.example.cleanarchitecture.databinding.FragmentTaskListBinding
 import com.example.cleanarchitecture.presentation.activity.TaskAdapter
@@ -31,7 +33,10 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding>(
 
     override fun setupListener() {
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(R.id.action_taskListFragment_to_addTaskFragment)
+            val intent = Intent(requireContext(), AddTaskActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
         }
     }
 
